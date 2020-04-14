@@ -21,8 +21,9 @@ def get_currently_infected_people_severe(reportedCases):
     return reportedCases * 50
  
 
-def getInfectionsByRequestedTime(currentlyInfected):
-    return currentlyInfected * 1024
+def getInfectionsByRequestedTime(currentlyInfected, duration):
+    factor = math.ceil(duration/3)
+    return currentlyInfected * (pow(2, factor))
 
 def get_severe_cases_by_requested_time(infectionsByRequestedTime):
     return 0.15 * infectionsByRequestedTime
@@ -52,21 +53,21 @@ def estimator(data):
         'data' : data,
         'impact' :{
             'currentlyInfectedPeople' : currentlyInfectedPeople,
-            'infectionsByRequestedTime' : getInfectionsByRequestedTime(currentlyInfectedPeople),
-            'severeCasesByRequestedTime' : get_severe_cases_by_requested_time(getInfectionsByRequestedTime(currentlyInfectedPeople)),
-            'hospitalBedsByRequestedTime' : get_hospital_beds_by_requested_time(get_severe_cases_by_requested_time(getInfectionsByRequestedTime(currentlyInfectedPeople)), data.get('totalHospitalBeds')),
-            'casesForICUByRequestedTime' : get_cases_for_ICU_by_requested_time(getInfectionsByRequestedTime(currentlyInfectedPeople)),
-            'casesForVentilatorsByRequestedTime' : get_casesForVentilatorsByRequestedTime(getInfectionsByRequestedTime(currentlyInfectedPeople)),
-            'dollarsInflight' : get_dollarsInFlight(getInfectionsByRequestedTime(currentlyInfectedPeople), (math.ceil(data.get('timeToElapse')/24)),data.get('region').get('avgDailyIncomeInUSD'))
+            'infectionsByRequestedTime' : getInfectionsByRequestedTime(currentlyInfectedPeople, (data.get('timeToElapse')/24)),
+            'severeCasesByRequestedTime' : get_severe_cases_by_requested_time(getInfectionsByRequestedTime(currentlyInfectedPeople, (data.get('timeToElapse')/24))),
+            'hospitalBedsByRequestedTime' : get_hospital_beds_by_requested_time(get_severe_cases_by_requested_time(getInfectionsByRequestedTime(currentlyInfectedPeople, (data.get('timeToElapse')/24))), data.get('totalHospitalBeds')),
+            'casesForICUByRequestedTime' : get_cases_for_ICU_by_requested_time(getInfectionsByRequestedTime(currentlyInfectedPeople, (data.get('timeToElapse')/24))),
+            'casesForVentilatorsByRequestedTime' : get_casesForVentilatorsByRequestedTime(getInfectionsByRequestedTime(currentlyInfectedPeople, (data.get('timeToElapse')/24))),
+            'dollarsInflight' : get_dollarsInFlight(getInfectionsByRequestedTime(currentlyInfectedPeople, (data.get('timeToElapse')/24)), (math.ceil(data.get('timeToElapse')/24)),data.get('region').get('avgDailyIncomeInUSD'))
         },
         'severeImpact' : {
             'currentlyInfectedPeople' : currentlyInfectedPeopleSevere, 
-            'infectionsByRequestedTime' : getInfectionsByRequestedTime(currentlyInfectedPeopleSevere),
-            'severeCasesByRequestedTime' : get_severe_cases_by_requested_time(getInfectionsByRequestedTime(currentlyInfectedPeopleSevere)),
-            'hospitalBedsByRequestedTime' : get_hospital_beds_by_requested_time(get_severe_cases_by_requested_time(getInfectionsByRequestedTime(currentlyInfectedPeopleSevere)), data.get('totalHospitalBeds')),
-            'casesForICUByRequestedTime' : get_cases_for_ICU_by_requested_time(getInfectionsByRequestedTime(currentlyInfectedPeopleSevere)),
-            'casesForVentilatorsByRequestedTime' : get_casesForVentilatorsByRequestedTime(getInfectionsByRequestedTime(currentlyInfectedPeopleSevere)),
-            'dollarsInflight' : get_dollarsInFlight(getInfectionsByRequestedTime(currentlyInfectedPeopleSevere), (math.ceil(data.get('timeToElapse')/24)),data.get('region').get('avgDailyIncomeInUSD') )
+            'infectionsByRequestedTime' : getInfectionsByRequestedTime(currentlyInfectedPeopleSevere, (data.get('timeToElapse')/24)),
+            'severeCasesByRequestedTime' : get_severe_cases_by_requested_time(getInfectionsByRequestedTime(currentlyInfectedPeopleSevere, (data.get('timeToElapse')/24))),
+            'hospitalBedsByRequestedTime' : get_hospital_beds_by_requested_time(get_severe_cases_by_requested_time(getInfectionsByRequestedTime(currentlyInfectedPeopleSevere, (data.get('timeToElapse')/24))), data.get('totalHospitalBeds')),
+            'casesForICUByRequestedTime' : get_cases_for_ICU_by_requested_time(getInfectionsByRequestedTime(currentlyInfectedPeopleSevere, (data.get('timeToElapse')/24))),
+            'casesForVentilatorsByRequestedTime' : get_casesForVentilatorsByRequestedTime(getInfectionsByRequestedTime(currentlyInfectedPeopleSevere, (data.get('timeToElapse')/24))),
+            'dollarsInflight' : get_dollarsInFlight(getInfectionsByRequestedTime(currentlyInfectedPeopleSevere, (data.get('timeToElapse')/24)), (math.ceil(data.get('timeToElapse')/24)),data.get('region').get('avgDailyIncomeInUSD') )
         }
     }
 
